@@ -1,0 +1,334 @@
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
+
+# Integration-API
+
+This is a mock for the Integration API.
+
+## Authentication [/token]
+
+### Get valid token [GET]
+
++ Request (application/json)
+
+        {
+            "client_id" : "abcdef1234567890",
+            "client_secret" : "abcdef0987654321"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "access_token" : "abcdef1234567890"
+            }
+
+## Available Appointments [/availableAppointments]
+
+### Get available appointments [GET]
+
+You may get available appointments using this action.
+
++ Response 200 (application/json)
+
+    + Body
+    
+            [
+                {
+                    "doctorId" : 1,
+                    "name" : "Frederick Findacure",
+                    "sessions" : [
+                        {
+                            "time":"12:00",
+                            "startTime":43200,
+                            "length":900,
+                            "location":1
+                        },
+                        {
+                            "time":"14:00",
+                            "startTime":50400,
+                            "length":1800,
+                            "location":1
+                        },
+                        {
+                            "time":"14:30",
+                            "startTime":52200,
+                            "length":1800,
+                            "location":1
+                        },
+                        {
+                            "time":"15:00",
+                            "startTime":54000,
+                            "length":1800,
+                            "location":1
+                        },
+                        {
+                            "time":"15:30",
+                            "startTime":55800,
+                            "length":1800,
+                            "location":1
+                        },
+                        {
+                            "time":"16:00",
+                            "startTime":57600,
+                            "length":1800,
+                            "location":1
+                        },
+                        {
+                            "time":"16:30",
+                            "startTime":59400,
+                            "length":1800,
+                            "location":1
+                        },
+                        {
+                            "time":"17:00",
+                            "startTime":61200,
+                            "length":1800,
+                            "location":1
+                        }
+                    ]
+                }
+            ]
+
+## Appointments [/appointments]
+
+### Get a list of appointment [GET]
+
+You may get a list of appointments via their ID using this action. Note: If the requested appointment is not returned in the response, it is an invalid appointment ID.
+
++ Request (application/json)
+
+        {
+            "appointmentID" : [3]
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "appointments" : [
+                    {
+                        "id" : 3,
+                        "patient" : {
+                            "firstname" : "Simon",
+                            "lastname" : "Patterson"
+                        },
+                        "startTime" : 43200,
+                        "length" : 900,
+                        "location" : 1,
+                        "reason" : 124,
+                        "doctor" : {
+                            "id" : 1,
+                            "name" : "Federick Findacure"
+                        }
+                    }
+                ]
+            ]
+
+### Book an appointment [POST]
+
+You may booking a new appointment using this action. It takes a JSON object
+containing an appointment.
+
++ Request (application/json)
+
+        {
+            "patient" : {
+                "firstname" : "Simon",
+                "lastname" : "Patterson",
+                "email" : "simon.patterson@gmail.com"
+            },
+            "appointment" : {
+                "startTime": 43200,
+                "length": 900,
+                "location" : 1,
+                "reason": 124,
+                "doctorId" : 1
+            }
+        }
+
++ Response 201 (application/json)
+
+    + Body
+    
+            {
+                "id" : 3,
+                "startTime": 43200,
+                "length": 900,
+                "doctorId" : 1,
+                "patientId" : 3
+            }
+        
+## Appointment Detail [/appointments/{aptid}]
+
++ Parameters
+    + aptid: 1 (required, number) - ID of the appointment in form of an integer
+
+### View Appointment Detail [GET]
+
+You may get details around an appointment using this action.
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "id" : 3,
+                "patient" : {
+                    "firstname" : "Simon",
+                    "lastname" : "Patterson"
+                },
+                "startTime" : 43200,
+                "length" : 900,
+                "location" : 1,
+                "reason" : 124,
+                "doctor" : {
+                    "id" : 1,
+                    "name" : "Federick Findacure"
+                }
+            }
+        
++ Response 404 (application/json)
+
+    + Body
+
+            {
+                "code": 0,
+                "message": "Appointment not found
+            }
+
+### Cancel Appointment [DELETE]
+
+You may cancel an appointment using this action.
+
++ Response 200 (application/json)
+
++ Response 404 (application/json)
+
+    + Body
+
+            {
+                "code" : 0,
+                "message" : "appointment not found"
+            }
+
+### Update Appointment [PUT]
+
+You may reschedule an appointment using this action.
+
++ Request (application/json)
+
+        {
+            "id" : 3
+            "startTime": 43200,
+            "length": 900,
+            "location" : 1,
+            "reason": 124,
+            "doctorId" : 1
+        }
+
++ Response 200 (application/json)
+
++ Response 400 (application/json)
+
+    + Body
+
+            {
+                "code" : 0,
+                "message" : "designated appointment taken"
+            }
+
++ Response 404 (application/json)
+
+    + Body
+
+            {
+                "code" : 0,
+                "message" : "appointment not found"
+            }
+
+## Appointment Reasons [/appointments/reasons]
+
+### Get list of reasons [GET]
+
+You may get a list of reasons for an appointment using this action.
+
++ Response 200 (application/json)
+
+    + Body
+
+            [
+                {
+                    "id" : 124,
+                    "name" : "General"
+                },
+                {
+                    "id" : 249,
+                    "name" : "Antenatal care"
+                },
+                {
+                    "id" : 1,
+                    "name" : "Skin check"
+                },
+                {
+                    "id" : 57,
+                    "name" : "Immunisation"
+                },
+                {
+                    "id" : 537,
+                    "name" : "Medication Review"
+                },
+                {
+                    "id" : 490,
+                    "name" : "Mental Health"
+                },
+                {
+                    "id" : 401,
+                    "name" : "Pap smear"
+                },
+                {
+                    "id" : 2,
+                    "name" : "Skin lesion excision"
+                },
+                {
+                    "id" : 58,
+                    "name" : "Child Immunisation"
+                },
+                {
+                    "id" : 3,
+                    "name" : "Other"
+                }
+            ]
+
+## Practitioners [/practitioners]
+
+### Practitioners [GET]
+
+You may get a list of practitioners for this clinic using this action.
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id" : 1
+                "name" : "Frederick Findacure"
+            },
+            {
+                "id" : 3
+                "name" : "Ivar Cure"
+            },
+            {
+                "id" : 5
+                "name" : "Jess Needle"
+            },
+            {
+                "id" : 8
+                "name" : "Lauren Mindfield"
+            },
+            {
+                "id" : 9
+                "name" : "Kevin Sweet"
+            }
+        ]
